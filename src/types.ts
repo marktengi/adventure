@@ -7,6 +7,13 @@ export enum PromptType {
   TIME = "time",
 }
 
+export enum PromptCategory {
+  DRIVING = "driving",
+  FOOD = "food",
+  WALKING = "walking",
+  LANDMARK = "landmark",
+}
+
 export interface RoadTripPrompt {
   id: string;
   type: PromptType;

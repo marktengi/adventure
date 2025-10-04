@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import InstructionDisplay from "./components/InstructionDisplay";
-import MadLibsPrompt from "./components/MadLibsPrompt";
 import { promptCombinations, promptSets, roadTripInstructions } from "./data";
 import type {
   GeneratedInstruction,
@@ -17,7 +16,7 @@ function App() {
   const [currentPromptSet, setCurrentPromptSet] = useState<string[]>([]);
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
   const [userSelections, setUserSelections] = useState<UserSelection[]>([]);
-  const [allSessions, setAllSessions] = useState<RoadTripSession[]>([]);
+  const [_, setAllSessions] = useState<RoadTripSession[]>([]);
 
   // Load sessions from localStorage on mount
   useEffect(() => {
@@ -143,23 +142,18 @@ function App() {
 
       <main className="app-main">
         {/* Current prompt if not complete */}
-        {!isPromptSetComplete() && (
+        {/* {!isPromptSetComplete() && (
           <MadLibsPrompt
             prompt={getCurrentPrompt()}
             onSelection={handleSelection}
             step={currentPromptIndex + 1}
             totalSteps={currentPromptSet.length}
           />
-        )}
+        )} */}
 
         {/* Current instruction display */}
-        {currentSession && currentSession.instructions.length > 0 && (
+        {currentSession && (
           <InstructionDisplay
-            instruction={
-              currentSession.instructions[
-                currentSession.instructions.length - 1
-              ]
-            }
             onContinue={continueAdventure}
             onNewAdventure={startNewAdventure}
           />
