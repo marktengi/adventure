@@ -1,13 +1,101 @@
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 import "./App.css";
-import InstructionDisplay from "./components/InstructionDisplay";
-import type { RoadTripSession } from "./types";
+import { NewPromptSelector } from "./components/NewPromptSelector";
+import { Selection } from "./components/Selection";
+import { DirectionLR } from "./components/widgets/DirectionLR";
+import { prompts } from "./data";
+import { PromptCategory, PromptType, type RoadTripSession } from "./types";
+import { parsePrompt, type ParsedPrompt } from "./utils/prompt";
 import { getSessions } from "./utils/storage";
+
+const PromptArea = styled.span`
+  display: inline-block;
+  max-width: 100%;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+`;
 
 function App() {
   const [currentSession, setCurrentSession] = useState<RoadTripSession | null>(
     null
   );
+  const [prompt, setPrompt] = useState<ParsedPrompt>(
+    parsePrompt(prompts[PromptCategory.DRIVING][0])
+  );
+
+  const newPromptSelection = (category: PromptCategory) => {
+    const categoryPrompts = prompts[category];
+    const newPrompt = parsePrompt(
+      categoryPrompts[Math.floor(Math.random() * categoryPrompts.length)]
+    );
+    setPrompt(newPrompt);
+    setSelections([]);
+    setWidget(null);
+    setMask(newPrompt.numSelections > 0);
+  };
+
+  const [widget, setWidget] = useState<React.ReactNode | null>(null);
+  const [mask, setMask] = useState<boolean>(true);
+
+  const [selections, setSelections] = useState<string[]>([]);
+
+  const setSelection = (selectedOption: string, idx: number) => {
+    const newSelections = [...selections];
+    newSelections[idx] = selectedOption;
+    setSelections(newSelections);
+  };
+
+  const selectWidget = (promptType: PromptType, idx: number) => {
+    switch (promptType) {
+      case PromptType.DIRECTION_LR:
+        setWidget(
+          <DirectionLR
+            onSelection={(selectedOption: string) =>
+              setSelection(selectedOption, idx)
+            }
+            multi={false}
+          />
+        );
+        break;
+      // case PromptType.DIRECTION_LRF:
+      //   setWidget(
+      //     <DirectionLRF
+      //       onSelection={(selectedOption: string) =>
+      //         setSelection(selectedOption, idx)
+      //       }
+      //     />
+      //   );
+      //   break;
+      default:
+        setWidget(null);
+        break;
+    }
+  };
+
+  const components = prompt.parts.map((part, index) => {
+    if (typeof part === "object" && "promptType" in part) {
+      return (
+        <Selection
+          promptType={part.promptType}
+          onClick={(promptType: PromptType) => selectWidget(promptType, index)}
+          value={selections[index]}
+        />
+      );
+    }
+    // return <span style={{ opacity: mask ? 0 : 1 }}>{part}</span>;
+    return <span>{mask ? "_".repeat(part.length) : part}</span>;
+  });
+
   // const [currentPromptSet, setCurrentPromptSet] = useState<string[]>([]);
   // const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
   // const [userSelections, setUserSelections] = useState<UserSelection[]>([]);
@@ -146,13 +234,15 @@ function App() {
           />
         )} */}
 
-        {/* Current instruction display */}
-        {currentSession && (
-          <InstructionDisplay
-            onContinue={continueAdventure}
-            onNewAdventure={startNewAdventure}
-          />
-        )}
+        <PromptArea>{components}</PromptArea>
+        <br />
+        {widget}
+
+        <button onClick={() => setMask(false)}>Reveal</button>
+
+        <NewPromptSelector onSelection={newPromptSelection} />
+
+        <button onClick={continueAdventure}>Continue Adventure</button>
       </main>
     </div>
   );

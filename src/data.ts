@@ -155,6 +155,7 @@ export const roadTripInstructions: RoadTripInstruction[] = [
 
 export const prompts: Record<PromptCategory, string[]> = {
   [PromptCategory.DRIVING]: [
+    "Turn {direction_lr} as soon as possible",
     "Make as few turns as possible for {{driving_amount}}",
     "For the next {{driving_amount}}, make every {direction_lr} turn that you haven't made yet",
     "Follow the next {color} car you see for {{driving_amount}}",
