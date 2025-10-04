@@ -17,7 +17,7 @@ const expanders = {
 };
 
 const expand = (prompt: string) => {
-  return prompt.replace(/{{(\w+)}}/g, (match, p1) => {
+  return prompt.replace(/{{(\w+)}}/g, (_, p1) => {
     return expanders[p1 as keyof typeof expanders][
       Math.floor(Math.random() * expanders[p1 as keyof typeof expanders].length)
     ];

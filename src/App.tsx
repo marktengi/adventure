@@ -60,7 +60,7 @@ function App() {
     setUserSelections([]);
   };
 
-  const handleSelection = (promptId: string, selectedOption: string) => {
+  const _handleSelection = (promptId: string, selectedOption: string) => {
     const newSelection: UserSelection = { promptId, selectedOption };
     const updatedSelections = [...userSelections, newSelection];
     setUserSelections(updatedSelections);
@@ -124,12 +124,12 @@ function App() {
     }
   };
 
-  const getCurrentPrompt = () => {
+  const _getCurrentPrompt = () => {
     const promptId = currentPromptSet[currentPromptIndex];
     return promptSets[promptId as keyof typeof promptSets];
   };
 
-  const isPromptSetComplete = () => {
+  const _isPromptSetComplete = () => {
     return currentPromptIndex >= currentPromptSet.length;
   };
 

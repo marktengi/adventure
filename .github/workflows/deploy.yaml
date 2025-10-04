@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: lts/*
-          cache: "yarn"
+          cache: "npm"
       - name: Install dependencies
         run: yarn install
       - name: Build
