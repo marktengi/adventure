@@ -3,6 +3,7 @@ import styled from "styled-components";
 import "./App.css";
 import { NewPromptSelector } from "./components/NewPromptSelector";
 import { Selection } from "./components/Selection";
+import { CardinalDirection } from "./components/widgets/CardinalDirection";
 import { DirectionLR } from "./components/widgets/DirectionLR";
 import { prompts } from "./data";
 import { PromptCategory, PromptType, type RoadTripSession } from "./types";
@@ -67,6 +68,17 @@ function App() {
           />
         );
         break;
+      case PromptType.DIRECTION_CARDINAL:
+        setWidget(
+          <CardinalDirection
+            onSelection={(selectedOption: string) =>
+              setSelection(selectedOption, idx)
+            }
+            multi={false}
+          />
+        );
+        break;
+
       // case PromptType.DIRECTION_LRF:
       //   setWidget(
       //     <DirectionLRF
@@ -92,8 +104,11 @@ function App() {
         />
       );
     }
-    // return <span style={{ opacity: mask ? 0 : 1 }}>{part}</span>;
-    return <span>{mask ? "_".repeat(part.length) : part}</span>;
+    const maskedContent = part
+      .split(" ")
+      .map((word) => "_".repeat(word.length))
+      .join(" ");
+    return <span>{mask ? maskedContent : part}</span>;
   });
 
   // const [currentPromptSet, setCurrentPromptSet] = useState<string[]>([]);

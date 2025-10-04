@@ -5,6 +5,9 @@ export enum PromptType {
   COLOR = "color",
   LANDMARK = "landmark",
   TIME = "time",
+  LETTER = "letter",
+  DISTANCE = "distance",
+  DIRECTION_CARDINAL = "direction_cardinal",
 }
 
 export enum PromptCategory {
