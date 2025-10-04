@@ -1,76 +1,71 @@
-import {
-  PromptCategory,
-  PromptType,
-  type RoadTripInstruction,
-  type RoadTripPrompt,
-} from "./types";
+import { PromptCategory, PromptType, type RoadTripInstruction } from "./types";
 
 // Individual prompt sets for multi-step adventures
-export const promptSets: Record<PromptType, RoadTripPrompt> = {
-  direction_lr: {
-    id: "direction",
-    type: PromptType.DIRECTION_LR,
-    question: "Pick a direction:",
-    options: ["left", "right"],
-  },
-  direction_lrf: {
-    id: "direction",
-    type: PromptType.DIRECTION_LRF,
-    question: "Pick a direction:",
-    options: ["left", "right", "forward"],
-  },
-  number: {
-    id: "number",
-    type: PromptType.NUMBER,
-    question: "Pick a number:",
-    options: ["1", "2", "3", "4", "5", "7", "10", "15", "20", "30"],
-  },
-  color: {
-    id: "color",
-    type: PromptType.COLOR,
-    question: "Pick a color:",
-    options: [
-      "red",
-      "blue",
-      "green",
-      "yellow",
-      "purple",
-      "orange",
-      "pink",
-      "black",
-      "white",
-    ],
-  },
-  landmark: {
-    id: "landmark",
-    type: PromptType.LANDMARK,
-    question: "Pick a landmark type:",
-    options: [
-      "gas station",
-      "restaurant",
-      "park",
-      "bridge",
-      "mountain",
-      "lake",
-      "mall",
-      "library",
-      "school",
-    ],
-  },
-  time: {
-    id: "time",
-    type: PromptType.TIME,
-    question: "Pick a time duration:",
-    options: [
-      "5 minutes",
-      "10 minutes",
-      "15 minutes",
-      "30 minutes",
-      "1 hour",
-      "2 hours",
-    ],
-  },
-};
+// export const promptSets: Record<PromptType, RoadTripPrompt> = {
+//   direction_lr: {
+//     id: "direction",
+//     type: PromptType.DIRECTION_LR,
+//     question: "Pick a direction:",
+//     options: ["left", "right"],
+//   },
+//   direction_lrf: {
+//     id: "direction",
+//     type: PromptType.DIRECTION_LRF,
+//     question: "Pick a direction:",
+//     options: ["left", "right", "forward"],
+//   },
+//   number: {
+//     id: "number",
+//     type: PromptType.NUMBER,
+//     question: "Pick a number:",
+//     options: ["1", "2", "3", "4", "5", "7", "10", "15", "20", "30"],
+//   },
+//   color: {
+//     id: "color",
+//     type: PromptType.COLOR,
+//     question: "Pick a color:",
+//     options: [
+//       "red",
+//       "blue",
+//       "green",
+//       "yellow",
+//       "purple",
+//       "orange",
+//       "pink",
+//       "black",
+//       "white",
+//     ],
+//   },
+//   landmark: {
+//     id: "landmark",
+//     type: PromptType.LANDMARK,
+//     question: "Pick a landmark type:",
+//     options: [
+//       "gas station",
+//       "restaurant",
+//       "park",
+//       "bridge",
+//       "mountain",
+//       "lake",
+//       "mall",
+//       "library",
+//       "school",
+//     ],
+//   },
+//   time: {
+//     id: "time",
+//     type: PromptType.TIME,
+//     question: "Pick a time duration:",
+//     options: [
+//       "5 minutes",
+//       "10 minutes",
+//       "15 minutes",
+//       "30 minutes",
+//       "1 hour",
+//       "2 hours",
+//     ],
+//   },
+// };
 
 // Available prompt combinations for multi-step adventures
 export const promptCombinations = [

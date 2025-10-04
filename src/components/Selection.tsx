@@ -17,7 +17,7 @@ interface SelectionProps {
   value: string | null;
 }
 
-const promptTypeMap = {
+const promptTypeMap: Record<PromptType, string> = {
   [PromptType.DIRECTION_LR]: "direction",
   [PromptType.DIRECTION_LRF]: "direction",
   [PromptType.NUMBER]: "number",
