@@ -18,6 +18,7 @@ export const prompts: Record<PromptCategory, string[]> = {
     "Drive to a nearby town whose name is at least {number} letters long",
     "Go to the nearest road {direction_cardinal} of you and continue driving there",
 "Follow the next {number} arrow(s) you see on signs",
+"Get to exactly {number} miles {direction_cardinal} of where you currently are",
   ],
   [PromptCategory.FOOD]: [
     "Eat something at the nearest restaurant with a number in its name",
@@ -34,6 +35,9 @@ export const prompts: Record<PromptCategory, string[]> = {
     "Keep walking on this road until you've passed {number} buildings",
     "Follow a person wearing {color} for the next {number} minutes",
 "Find a place nearby to buy {number} items for ${number} or less",
+"Walk to the closest historical landmark",
+"Go {direction_cardinal} until you get bored",
+"At the next turn, go opposite the way you normally would",
   ],
   [PromptCategory.LANDMARK]: [
     "Go to a {{landmark}} without taking any {direction_lr} turns",
