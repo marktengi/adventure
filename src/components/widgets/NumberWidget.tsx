@@ -44,6 +44,91 @@ export const NumberWidget = ({
     "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
   >(initialValue ?? "1");
 
+  const [isDragging, setIsDragging] = useState(false);
+
+  const onChange =
+    (type: "input" | "change") => (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log(type);
+      setValue(
+        e.target.value as
+          | "1"
+          | "2"
+          | "3"
+          | "4"
+          | "5"
+          | "6"
+          | "7"
+          | "8"
+          | "9"
+          | "10"
+      );
+      onDrag(
+        e.target.value as
+          | "1"
+          | "2"
+          | "3"
+          | "4"
+          | "5"
+          | "6"
+          | "7"
+          | "8"
+          | "9"
+          | "10"
+      );
+    };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLInputElement>) => {
+    console.log("touch start");
+    setIsDragging(true);
+    e.stopPropagation();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLInputElement>) => {
+    console.log("touch move");
+    if (isDragging) {
+      console.log("touch move, dragging");
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLInputElement>) => {
+    console.log("touch end");
+    if (isDragging) {
+      console.log("touch end, dragging");
+      setIsDragging(false);
+      e.preventDefault();
+      e.stopPropagation();
+      handleSelection(value);
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLInputElement>) => {
+    console.log("mouse down");
+    setIsDragging(true);
+    e.stopPropagation();
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLInputElement>) => {
+    console.log("mouse up");
+    if (isDragging) {
+      console.log("mouse up, dragging");
+      setIsDragging(false);
+      e.preventDefault();
+      e.stopPropagation();
+      handleSelection(value);
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    console.log("click");
+    // Prevent click if we were dragging
+    if (isDragging) {
+      console.log("click, dragging");
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
   return (
     <WidgetContainer>
       <NumberInput
@@ -51,40 +136,17 @@ export const NumberWidget = ({
         min="1"
         max="10"
         value={value}
-        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setValue(
-            e.target.value as
-              | "1"
-              | "2"
-              | "3"
-              | "4"
-              | "5"
-              | "6"
-              | "7"
-              | "8"
-              | "9"
-              | "10"
-          );
-          onDrag(
-            e.target.value as
-              | "1"
-              | "2"
-              | "3"
-              | "4"
-              | "5"
-              | "6"
-              | "7"
-              | "8"
-              | "9"
-              | "10"
-          );
-        }}
-        onMouseDown={(e) => {
-          e.preventDefault();
-        }}
-        onPointerUp={(e) => {
-          e.preventDefault();
-          handleSelection(value);
+        onInput={onChange("input")}
+        onChange={onChange("change")}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onClick={handleClick}
+        style={{
+          touchAction: "none", // Prevent default touch behaviors
+          userSelect: "none", // Prevent text selection during drag
         }}
       />
     </WidgetContainer>
