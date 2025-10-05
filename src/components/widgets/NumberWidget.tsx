@@ -52,7 +52,6 @@ export const NumberWidget = ({
         max="10"
         value={value}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-          console.log("change", e.target.value);
           setValue(
             e.target.value as
               | "1"

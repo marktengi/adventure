@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { WidgetContainer, type WidgetProps } from "./types";
+import { WidgetContainerCompact, type WidgetProps } from "./types";
 
 const DirectionButton = styled.button`
   background-color: #f8fafc;
@@ -17,13 +17,13 @@ export const DirectionLR = ({ onSelection }: DirectionLRProps) => {
     onSelection(selectedOption);
   };
   return (
-    <WidgetContainer>
+    <WidgetContainerCompact>
       <DirectionButton onClick={() => handleSelection("left")}>
         Left
       </DirectionButton>
       <DirectionButton onClick={() => handleSelection("right")}>
         Right
       </DirectionButton>
-    </WidgetContainer>
+    </WidgetContainerCompact>
   );
 };

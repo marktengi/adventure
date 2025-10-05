@@ -30,7 +30,6 @@ const PromptArea = styled.span`
 
 export const App = () => {
   const [prompt, setPrompt] = useState<ParsedPrompt>(() => {
-    console.log("in usestate");
     return parsePrompt(prompts[PromptCategory.DRIVING][0]);
   });
 
@@ -45,22 +44,17 @@ export const App = () => {
     Record<number, string>
   >({});
 
-  console.log("rendering. prompt:", prompt);
-
   const newPromptSelection = (category: PromptCategory) => {
     const categoryPrompts = prompts[category];
-    console.log("newPromptSelection", category);
     const newPrompt = parsePrompt(
       categoryPrompts[Math.floor(Math.random() * categoryPrompts.length)]
     );
-    console.log("setting a new prompt", newPrompt);
     setPrompt(newPrompt);
     setSelectionedValues([]);
     setMask(newPrompt.selectionIndices.length > 0);
     if (newPrompt.selectionIndices.length > 0) {
       setCurrentSelectionIndex(0);
     } else {
-      console.log("no selection indices");
       setCurrentSelectionIndex(null);
     }
   };
@@ -70,19 +64,28 @@ export const App = () => {
     (selectedOption: string, idx: number, advance: boolean = true) => {
       const newSelections = { ...selectedValues, [idx]: selectedOption };
       setSelectionedValues(newSelections);
-      console.log("setSelection", newSelections, idx);
 
       // advance the selection index if it is not the last one
+      // if we're on the last but a previous part is selected, set the current selection index to the previous part
       if (advance) {
         if (
           currentSelectionIndex !== null &&
           currentSelectionIndex < prompt.selectionIndices.length - 1
         ) {
-          console.log("advancing");
           setCurrentSelectionIndex(currentSelectionIndex + 1);
         } else {
-          console.log("resetting");
-          setCurrentSelectionIndex(null);
+          const unfilledIndices = prompt.selectionIndices.filter(
+            (index) => !newSelections[index]
+          );
+          if (unfilledIndices.length > 0) {
+            const nextIndex = prompt.selectionIndices.indexOf(
+              unfilledIndices[0]
+            );
+            setCurrentSelectionIndex(nextIndex);
+          } else {
+            setCurrentSelectionIndex(null);
+            setMask(false);
+          }
         }
       }
     },
@@ -168,8 +171,6 @@ export const App = () => {
     }
   }, [currentSelectionIndex, prompt, updateSelectedValue, selectedValues]);
 
-  console.log("currentSelectionIndex", currentSelectionIndex);
-
   const components = prompt.parts.map((part, index) => {
     if (typeof part === "object" && "promptType" in part) {
       return (
@@ -178,13 +179,6 @@ export const App = () => {
           promptType={part.promptType}
           onClick={() => {
             // when this selection is clicked, set the current selection index to this index
-            console.log(
-              `click on ${
-                part.promptType
-              } setting current selection index to ${prompt.selectionIndices.indexOf(
-                index
-              )}`
-            );
             setCurrentSelectionIndex(prompt.selectionIndices.indexOf(index));
           }}
           value={selectedValues[index]}
@@ -213,8 +207,6 @@ export const App = () => {
         <PromptArea>{components}</PromptArea>
         <br />
         {widget}
-
-        <button onClick={() => setMask(false)}>Reveal</button>
 
         <NewPromptSelector onSelection={newPromptSelection} />
       </main>

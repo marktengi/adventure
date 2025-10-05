@@ -10,24 +10,23 @@ interface NewPromptSelectorProps {
 }
 
 const CategoryButton = styled.button`
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
+  background-color: #f8fafc;
+  border: 1px solid #e5e7eb;
   flex: 1;
-  text-align: center;
   font-size: 1rem;
   font-weight: 600;
   color: #374151;
   line-height: 1.6;
-  text-align: center;
   margin-bottom: 1rem;
-  padding: 0.5rem;
+  padding: 0.75rem;
   border-radius: 12px;
-  background-color: #f8fafc;
-  border: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-height: 80px;
 `;
 
 const CategoryButtonImg = styled.img`
@@ -41,31 +40,46 @@ const StyledDiv = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+`;
+// fixed div to keep the buttons at the bottom of the screen
+// full width, respecting the padding on the surrounding div
+const FixedDiv = styled.div`
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
 `;
 
 export const NewPromptSelector = ({ onSelection }: NewPromptSelectorProps) => {
   return (
-    <StyledDiv>
-      <CategoryButton onClick={() => onSelection(PromptCategory.DRIVING)}>
-        <CategoryButtonImg src={car} alt="Driving" />
-        Driving
-      </CategoryButton>
-      <CategoryButton onClick={() => onSelection(PromptCategory.FOOD)}>
-        <CategoryButtonImg src={food} alt="Food" />
-        Food
-      </CategoryButton>
-      <CategoryButton onClick={() => onSelection(PromptCategory.WALKING)}>
-        <CategoryButtonImg src={walking} alt="Walking" />
-        Walking
-      </CategoryButton>
-      <CategoryButton onClick={() => onSelection(PromptCategory.LANDMARK)}>
-        <CategoryButtonImg src={landmark} alt="Landmark" />
-        Landmark
-      </CategoryButton>
-    </StyledDiv>
+    <FixedDiv>
+      <StyledDiv>
+        <CategoryButton onClick={() => onSelection(PromptCategory.DRIVING)}>
+          <CategoryButtonImg src={car} alt="Driving" />
+          Driving
+        </CategoryButton>
+        <CategoryButton onClick={() => onSelection(PromptCategory.FOOD)}>
+          <CategoryButtonImg src={food} alt="Food" />
+          Food
+        </CategoryButton>
+        <CategoryButton onClick={() => onSelection(PromptCategory.WALKING)}>
+          <CategoryButtonImg src={walking} alt="Walking" />
+          Walking
+        </CategoryButton>
+        <CategoryButton onClick={() => onSelection(PromptCategory.LANDMARK)}>
+          <CategoryButtonImg src={landmark} alt="Landmark" />
+          Landmark
+        </CategoryButton>
+      </StyledDiv>
+    </FixedDiv>
   );
 };
