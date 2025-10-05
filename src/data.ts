@@ -19,12 +19,17 @@ export const prompts: Record<PromptCategory, string[]> = {
     "Go to the nearest road {direction_cardinal} of you and continue driving there",
 "Follow the next {number} arrow(s) you see on signs",
 "Get to exactly {number} miles {direction_cardinal} of where you currently are",
+"Drive to a body of water {direction_cardinal} of you",
+"Don't take any {direction} turns for the next {{driving_amount}}",
   ],
   [PromptCategory.FOOD]: [
     "Eat something at the nearest restaurant with a number in its name",
     "Eat at the restaurant with the longest name you can find",
     "Eat at the closest {{cuisine}} restaurant",
     "Go to the nearest restaurant where you can eat something new",
+"Eat at a restaurant with {color} in its logo",
+"Try to eat something {color}",
+"Find some food that costs ${number} or less",
   ],
   [PromptCategory.WALKING]: [
     "Walk to the tallest object you can see {direction_cardinal} of you",
@@ -38,6 +43,9 @@ export const prompts: Record<PromptCategory, string[]> = {
 "Walk to the closest historical landmark",
 "Go {direction_cardinal} until you get bored",
 "At the next turn, go opposite the way you normally would",
+"Take at least {number} turns on your way back to the car",
+"Alternate left and right turns for the next {number} blocks",
+"Don't take any {direction} turns for the next {number} minutes",
   ],
   [PromptCategory.LANDMARK]: [
     "Go to a {{landmark}} without taking any {direction_lr} turns",
