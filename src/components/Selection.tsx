@@ -21,6 +21,7 @@ const SelectionSpan = styled.span<{ filled: boolean; current: boolean }>`
   box-sizing: border-box;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin: 0 0.25rem;
 
   /* Mobile touch optimization */
   -webkit-tap-highlight-color: transparent;
@@ -156,18 +157,21 @@ export const Selection = ({
   value,
   current,
 }: SelectionProps) => {
-  const content = value ?? promptTypeMap[promptType];
+  const content = value ? (
+    <PlaceholderSpan>{value}</PlaceholderSpan>
+  ) : (
+    promptTypeMap[promptType]
+  );
 
   return (
     <>
-      {" "}
       <SelectionSpan
         filled={!!value}
         onClick={() => onClick(promptType)}
         current={current}
       >
         {content}
-      </SelectionSpan>{" "}
+      </SelectionSpan>
     </>
   );
 };

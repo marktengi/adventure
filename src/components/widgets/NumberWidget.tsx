@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { WidgetContainer, type WidgetProps } from "./types";
 
@@ -61,8 +61,6 @@ export const NumberWidget = ({
   initialValue,
   onDrag,
 }: NumberWidgetProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const handleSelection = (
     selectedOption: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
   ) => {
@@ -158,41 +156,9 @@ export const NumberWidget = ({
     }
   };
 
-  // Container touch handlers that ignore non-input touches
-  const handleContainerTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log("container touch start");
-    // Only allow touches directly on the input
-    if (e.target !== inputRef.current) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
-
-  const handleContainerTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log("container touch move");
-    // Only allow touches directly on the input
-    if (e.target !== inputRef.current) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
-
-  const handleContainerTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log("container touch end");
-    // Only allow touches directly on the input
-    if (e.target !== inputRef.current) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
   return (
-    <WidgetContainer
-      onTouchStart={handleContainerTouchStart}
-      onTouchMove={handleContainerTouchMove}
-      onTouchEnd={handleContainerTouchEnd}
-    >
+    <WidgetContainer>
       <NumberInput
-        ref={inputRef}
         type="range"
         min="1"
         max="10"

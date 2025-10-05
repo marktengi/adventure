@@ -85,6 +85,18 @@ const PromptArea = styled.span`
   }
 `;
 
+const MaskedText = styled.span`
+  color: transparent;
+  border-bottom: 2px solid #374151;
+  // display: inline-block;
+  min-width: 0.5em;
+
+  &.unmasked {
+    color: #374151;
+    border-bottom: none;
+  }
+`;
+
 const WidgetContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -267,11 +279,13 @@ export const App = () => {
         />
       );
     }
-    const maskedContent = part
-      .split(" ")
-      .map((word) => "_".repeat(word.length))
-      .join(" ");
-    return <span key={index}>{mask ? maskedContent : part}</span>;
+    return mask ? (
+      <MaskedText key={index}>{part}</MaskedText>
+    ) : (
+      <MaskedText className="unmasked" key={index}>
+        {part}
+      </MaskedText>
+    );
   });
 
   return (
