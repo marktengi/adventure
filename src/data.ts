@@ -53,5 +53,6 @@ export const prompts: Record<PromptCategory, string[]> = {
   [PromptCategory.LANDMARK]: [
     "Go to a {{landmark}} without taking any {direction_lr} turns",
     "Go to a nearby {{landmark}} with a name containing {letter}",
+    "Go to the nearest {{landmark}} that's {direction_cardinal} of you",
   ],
 };

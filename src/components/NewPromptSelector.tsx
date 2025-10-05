@@ -92,9 +92,36 @@ const FixedContainer = styled.div`
   z-index: 10;
 `;
 
+const SelectorHeader = styled.div`
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+`;
+
+const SelectorTitle = styled.h3`
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
+`;
+
 export const NewPromptSelector = ({ onSelection }: NewPromptSelectorProps) => {
   return (
     <FixedContainer>
+      <SelectorHeader>
+        <SelectorTitle>Pick Something New to Do</SelectorTitle>
+      </SelectorHeader>
       <ButtonGrid>
         <CategoryButton onClick={() => onSelection(PromptCategory.DRIVING)}>
           <CategoryButtonImg src={car} alt="Driving" />

@@ -4,15 +4,10 @@ import { WidgetContainer, type WidgetProps } from "./types";
 
 const NumberInput = styled.input`
   background-color: white;
-  border: 2px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 1rem;
   font-size: 1.2rem;
   font-weight: 600;
   color: #374151;
   width: 100%;
-  min-height: 60px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
 
   /* Mobile touch optimization */
@@ -30,8 +25,6 @@ const NumberInput = styled.input`
   }
 
   @media (max-width: 480px) {
-    min-height: 50px;
-    padding: 0.75rem;
     font-size: 1rem;
   }
 `;
