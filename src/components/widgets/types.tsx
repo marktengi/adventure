@@ -24,7 +24,7 @@ export const WidgetContainer = styled.div`
 export const WidgetContainerCompact = styled.div<{ noGap?: boolean }>`
   display: flex;
   flex-direction: row;
-  gap: ${({ noGap }) => (noGap ? "0" : "1rem")};
+  gap: ${({ noGap }) => (noGap ? "0.25rem" : "1rem")};
   width: 100%;
   flex-wrap: wrap;
   justify-content: center;

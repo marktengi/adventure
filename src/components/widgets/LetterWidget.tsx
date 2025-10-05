@@ -5,8 +5,10 @@ const LetterButton = styled.button`
   background-color: #f8fafc;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.5rem;
   font-size: 1.2rem;
+  min-width: 3rem;
+  min-height: 3rem;
 `;
 type Letter =
   | "A"

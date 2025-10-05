@@ -14,18 +14,35 @@ import { parsePrompt } from "./utils/prompt";
 
 const PromptArea = styled.span`
   display: inline-block;
-  max-width: 100%;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #374151;
   line-height: 1.6;
   text-align: center;
   margin-bottom: 1rem;
   padding: 1rem;
-  border-radius: 12px;
+`;
+
+const PromptAreaContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  vertical-align: middle;
   background-color: #f8fafc;
   border: 1px solid #e5e7eb;
   width: 100%;
+  border-radius: 12px;
+`;
+
+const WidgetContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
 `;
 
 export const App = () => {
@@ -44,11 +61,31 @@ export const App = () => {
     Record<number, string>
   >({});
 
-  const newPromptSelection = (category: PromptCategory) => {
+  const [curPromptInfo, setCurPromptInfo] = useState<{
+    category: PromptCategory;
+    idx: number;
+  }>({ category: PromptCategory.DRIVING, idx: 0 });
+  // get a new prompt, ensuring it's not the same as the current prompt
+  const getNewPrompt = (category: PromptCategory) => {
     const categoryPrompts = prompts[category];
-    const newPrompt = parsePrompt(
-      categoryPrompts[Math.floor(Math.random() * categoryPrompts.length)]
-    );
+    let newIdx = Math.floor(Math.random() * categoryPrompts.length);
+    if (category !== curPromptInfo.category) {
+      const newPrompt = parsePrompt(categoryPrompts[newIdx]);
+      setCurPromptInfo({ category, idx: newIdx });
+      return newPrompt;
+    } else {
+      if (newIdx === curPromptInfo.idx) {
+        console.log("newIdx is the same as the current idx, incrementing");
+        newIdx = (newIdx + 1) % categoryPrompts.length;
+      }
+      const newPrompt = parsePrompt(categoryPrompts[newIdx]);
+      setCurPromptInfo({ category, idx: newIdx });
+      return newPrompt;
+    }
+  };
+
+  const newPromptSelection = (category: PromptCategory) => {
+    const newPrompt = getNewPrompt(category);
     setPrompt(newPrompt);
     setSelectionedValues([]);
     setMask(newPrompt.selectionIndices.length > 0);
@@ -199,14 +236,14 @@ export const App = () => {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🗺️ Adventure Generator</h1>
-        <p>Multi-step randomized road trip adventures!</p>
+        <h1>Ariel's Adventure</h1>
       </header>
 
       <main className="app-main">
-        <PromptArea>{components}</PromptArea>
-        <br />
-        {widget}
+        <PromptAreaContainer>
+          <PromptArea>{components}</PromptArea>
+        </PromptAreaContainer>
+        <WidgetContainer>{widget}</WidgetContainer>
 
         <NewPromptSelector onSelection={newPromptSelection} />
       </main>

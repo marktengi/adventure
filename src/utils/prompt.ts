@@ -2,17 +2,7 @@ import { PromptType, type ParsedPrompt } from "../types";
 
 const expanders = {
   driving_amount: ["{number} minutes", "{number} miles"],
-  landmark: [
-    "gas station",
-    "restaurant",
-    "park",
-    "bridge",
-    "mountain",
-    "lake",
-    "mall",
-    "library",
-    "school",
-  ],
+  landmark: ["park", "bridge", "mountain", "lake", "mall"],
   cuisine: ["Italian", "Mexican", "Japanese", "French", "Thai"],
 };
 

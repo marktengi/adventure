@@ -23,7 +23,7 @@ export const prompts: Record<PromptCategory, string[]> = {
     "Eat at the closest {{cuisine}} restaurant",
   ],
   [PromptCategory.WALKING]: [
-    "Walk to the tallest object you can see",
+    "Walk to the tallest object you can see {direction_cardinal} of you",
     "Walk around until you find a pretty flower",
     "Turn around and walk the other way",
     "Go into the most interesting shop you see",
