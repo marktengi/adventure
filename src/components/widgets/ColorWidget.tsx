@@ -3,23 +3,59 @@ import { Color } from "../../types";
 import { WidgetContainerCompact, type WidgetProps } from "./types";
 
 const ColorButton = styled.button`
-  background-color: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background-color: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
   padding: 1rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   flex-direction: column;
-  flex: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  /* Mobile touch optimization */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  &:hover {
+    border-color: #667eea;
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 70px;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
 `;
 
 const ColorSquare = styled.div<{ color: Color }>`
   background-color: ${({ color }) => color};
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 6px;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 480px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 `;
 
 export type ColorWidgetProps = WidgetProps<Color[]> & {

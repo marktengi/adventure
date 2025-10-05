@@ -10,16 +10,15 @@ interface NewPromptSelectorProps {
 }
 
 const CategoryButton = styled.button`
-  background-color: #f8fafc;
-  border: 1px solid #e5e7eb;
+  background-color: white;
+  border: 2px solid #e5e7eb;
   flex: 1;
   font-size: 1rem;
   font-weight: 600;
   color: #374151;
   line-height: 1.6;
-  margin-bottom: 1rem;
-  padding: 0.75rem;
-  border-radius: 12px;
+  padding: 1rem;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,30 +26,64 @@ const CategoryButton = styled.button`
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   min-height: 80px;
+  min-width: 80px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* Mobile touch optimization */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  &:hover {
+    border-color: #667eea;
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 70px;
+    min-width: 70px;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
 `;
 
 const CategoryButtonImg = styled.img`
-  width: 36px;
-  height: 36px;
-  margin-bottom: 10px;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 8px;
   display: block;
+
+  @media (max-width: 480px) {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 6px;
+  }
 `;
 
-const StyledDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+const ButtonGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-  justify-content: center;
-  align-items: stretch;
   width: 100%;
   padding: 16px;
-  max-width: 600px;
+  max-width: 400px;
   margin: 0 auto;
+
+  @media (max-width: 480px) {
+    gap: 8px;
+    padding: 12px;
+  }
 `;
-// fixed div to keep the buttons at the bottom of the screen
-// full width, respecting the padding on the surrounding div
-const FixedDiv = styled.div`
+
+const FixedContainer = styled.div`
   position: fixed;
   width: 100%;
   bottom: 0;
@@ -61,8 +94,8 @@ const FixedDiv = styled.div`
 
 export const NewPromptSelector = ({ onSelection }: NewPromptSelectorProps) => {
   return (
-    <FixedDiv>
-      <StyledDiv>
+    <FixedContainer>
+      <ButtonGrid>
         <CategoryButton onClick={() => onSelection(PromptCategory.DRIVING)}>
           <CategoryButtonImg src={car} alt="Driving" />
           Driving
@@ -79,7 +112,7 @@ export const NewPromptSelector = ({ onSelection }: NewPromptSelectorProps) => {
           <CategoryButtonImg src={landmark} alt="Landmark" />
           Landmark
         </CategoryButton>
-      </StyledDiv>
-    </FixedDiv>
+      </ButtonGrid>
+    </FixedContainer>
   );
 };

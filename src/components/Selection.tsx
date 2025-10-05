@@ -7,26 +7,88 @@ import numbers from "../assets/numbers.svg";
 import { PromptType } from "../types";
 
 const SelectionSpan = styled.span<{ filled: boolean; current: boolean }>`
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 0 0.5rem;
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
-  min-width: 100px;
-  display: inline-block;
+  font-weight: 600;
+  min-width: 120px;
+  min-height: 44px; /* iOS minimum touch target */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   vertical-align: middle;
   box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  /* Mobile touch optimization */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  /* Base styling for unfilled selections */
+  background-color: #f8fafc;
+  border: 2px solid #e5e7eb;
+  color: #6b7280;
+
+  /* Filled selection styling - green success state */
   ${({ filled }) =>
-    !filled &&
+    filled &&
     css`
-      opacity: 0.5;
+      background-color: #f0fdf4;
+      border-color: #22c55e;
+      color: #166534;
+      font-weight: 700;
     `}
+
+  /* Current/active selection styling - blue focus state */
   ${({ current }) =>
     current &&
     css`
-      border: 3px solid #2563eb;
+      background-color: #eff6ff;
+      border-color: #3b82f6;
+      color: #1e40af;
+      font-weight: 700;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      animation: pulse 2s infinite;
     `}
+
+  /* Unfilled selection styling - orange warning state */
+  ${({ filled, current }) =>
+    !filled &&
+    !current &&
+    css`
+      background-color: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+      border-style: dashed;
+    `}
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 480px) {
+    min-width: 100px;
+    min-height: 40px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.1);
+    }
+  }
 `;
 interface SelectionProps {
   promptType: PromptType;

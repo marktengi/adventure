@@ -2,13 +2,43 @@ import styled from "styled-components";
 import { WidgetContainerCompact, type WidgetProps } from "./types";
 
 const LetterButton = styled.button`
-  background-color: #f8fafc;
-  border: 1px solid #e5e7eb;
+  background-color: white;
+  border: 2px solid #e5e7eb;
   border-radius: 12px;
   padding: 0.5rem;
-  font-size: 1.2rem;
-  min-width: 3rem;
-  min-height: 3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  /* Mobile touch optimization */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  &:hover {
+    border-color: #667eea;
+    background: #f8fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+  }
+
+  @media (max-width: 480px) {
+    min-width: 2rem;
+    min-height: 2rem;
+    font-size: 0.9rem;
+    padding: 0.4rem;
+  }
 `;
 type Letter =
   | "A"
@@ -74,7 +104,7 @@ export const LetterWidget = ({ onSelection }: LetterWidgetProps) => {
     "Z",
   ];
   return (
-    <WidgetContainerCompact noGap>
+    <WidgetContainerCompact noGap columns={4}>
       {letters.map((letter) => (
         <LetterButton key={letter} onClick={() => handleSelection(letter)}>
           {letter}
