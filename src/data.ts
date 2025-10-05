@@ -20,7 +20,7 @@ export const prompts: Record<PromptCategory, string[]> = {
 "Follow the next {number} arrow(s) you see on signs",
 "Get to exactly {number} miles {direction_cardinal} of where you currently are",
 "Drive to a body of water {direction_cardinal} of you",
-"Don't take any {direction} turns for the next {{driving_amount}}",
+"Don't take any {direction_lr} turns for the next {{driving_amount}}",
   ],
   [PromptCategory.FOOD]: [
     "Eat something at the nearest restaurant with a number in its name",
@@ -45,7 +45,7 @@ export const prompts: Record<PromptCategory, string[]> = {
 "At the next turn, go opposite the way you normally would",
 "Take at least {number} turns on your way back to the car",
 "Alternate left and right turns for the next {number} blocks",
-"Don't take any {direction} turns for the next {number} minutes",
+"Don't take any {direction_lr} turns for the next {number} minutes",
   ],
   [PromptCategory.LANDMARK]: [
     "Go to a {{landmark}} without taking any {direction_lr} turns",
