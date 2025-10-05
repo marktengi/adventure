@@ -4,9 +4,7 @@ export enum PromptType {
   DIRECTION_LRF = "direction_lrf",
   COLOR = "color",
   LANDMARK = "landmark",
-  TIME = "time",
   LETTER = "letter",
-  DISTANCE = "distance",
   DIRECTION_CARDINAL = "direction_cardinal",
 }
 
@@ -17,23 +15,24 @@ export enum PromptCategory {
   LANDMARK = "landmark",
 }
 
-export interface RoadTripPrompt {
-  id: string;
-  type: PromptType;
-  question: string;
-  options: string[];
+export enum Color {
+  RED = "red",
+  GREEN = "green",
+  BLUE = "blue",
+  YELLOW = "yellow",
+  PURPLE = "purple",
+  ORANGE = "orange",
+  PINK = "pink",
+  BLACK = "black",
+  WHITE = "white",
+  GRAY = "gray",
 }
 
-export interface RoadTripInstruction {
-  id: string;
-  template: string;
-  placeholders: PromptType[];
-}
-
-export interface UserSelection {
-  promptId: string;
-  selectedOption: string;
-}
+export type ParsedPrompt = {
+  raw: string;
+  parts: (string | { promptType: PromptType })[];
+  selectionIndices: number[];
+};
 
 export interface GeneratedInstruction {
   instruction: string;

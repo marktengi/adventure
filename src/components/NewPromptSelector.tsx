@@ -12,17 +12,15 @@ interface NewPromptSelectorProps {
 const CategoryButton = styled.button`
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
   flex: 1;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #374151;
   line-height: 1.6;
   text-align: center;
   margin-bottom: 1rem;
-  padding: 1rem;
+  padding: 0.5rem;
   border-radius: 12px;
   background-color: #f8fafc;
   border: 1px solid #e5e7eb;

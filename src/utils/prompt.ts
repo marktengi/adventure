@@ -1,7 +1,7 @@
-import { PromptType } from "../types";
+import { PromptType, type ParsedPrompt } from "../types";
 
 const expanders = {
-  driving_amount: ["{time} minutes", "{distance} miles"],
+  driving_amount: ["{number} minutes", "{number} miles"],
   landmark: [
     "gas station",
     "restaurant",
@@ -24,12 +24,6 @@ const expand = (prompt: string) => {
   });
 };
 
-export type ParsedPrompt = {
-  raw: string;
-  parts: (string | { promptType: PromptType })[];
-  numSelections: number;
-};
-
 export const parsePrompt = (prompt: string): ParsedPrompt => {
   const raw = expand(prompt);
   const parts = raw.split(/ ?(\{.+?\}) ?/).map((part) => {
@@ -42,9 +36,10 @@ export const parsePrompt = (prompt: string): ParsedPrompt => {
       return part;
     }
   });
-  const numSelections = parts.filter(
-    (part) => typeof part === "object" && "promptType" in part
-  ).length;
-  console.log({ raw, parts, numSelections });
-  return { raw, parts, numSelections };
+  const selectionIndices = parts
+    .map((part, index) =>
+      typeof part === "object" && "promptType" in part ? index : null
+    )
+    .filter((index) => index !== null) as number[];
+  return { raw, parts, selectionIndices };
 };

@@ -1,5 +1,6 @@
 // a widget for choosing a cardinal direction
 
+import styled from "styled-components";
 import type { WidgetProps } from "./types";
 
 export type CardinalDirectionProps = WidgetProps<
@@ -7,6 +8,14 @@ export type CardinalDirectionProps = WidgetProps<
 > & {
   multi: false;
 };
+
+const CardinalDirectionButton = styled.button`
+  background-color: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1.2rem;
+`;
 
 export const CardinalDirection = ({ onSelection }: CardinalDirectionProps) => {
   const handleSelection = (
@@ -16,10 +25,18 @@ export const CardinalDirection = ({ onSelection }: CardinalDirectionProps) => {
   };
   return (
     <div>
-      <button onClick={() => handleSelection("north")}>North</button>
-      <button onClick={() => handleSelection("south")}>South</button>
-      <button onClick={() => handleSelection("east")}>East</button>
-      <button onClick={() => handleSelection("west")}>West</button>
+      <CardinalDirectionButton onClick={() => handleSelection("north")}>
+        North
+      </CardinalDirectionButton>
+      <CardinalDirectionButton onClick={() => handleSelection("south")}>
+        South
+      </CardinalDirectionButton>
+      <CardinalDirectionButton onClick={() => handleSelection("east")}>
+        East
+      </CardinalDirectionButton>
+      <CardinalDirectionButton onClick={() => handleSelection("west")}>
+        West
+      </CardinalDirectionButton>
     </div>
   );
 };

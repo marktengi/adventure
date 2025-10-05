@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import "./App.css";
 import { NewPromptSelector } from "./components/NewPromptSelector";
 import { Selection } from "./components/Selection";
 import { CardinalDirection } from "./components/widgets/CardinalDirection";
+import { ColorWidget } from "./components/widgets/ColorWidget";
 import { DirectionLR } from "./components/widgets/DirectionLR";
+import { LetterWidget } from "./components/widgets/LetterWidget";
+import { NumberWidget } from "./components/widgets/NumberWidget";
 import { prompts } from "./data";
-import { PromptCategory, PromptType, type RoadTripSession } from "./types";
-import { parsePrompt, type ParsedPrompt } from "./utils/prompt";
-import { getSessions } from "./utils/storage";
+import { Color, PromptCategory, PromptType, type ParsedPrompt } from "./types";
+import { parsePrompt } from "./utils/prompt";
 
 const PromptArea = styled.span`
   display: inline-block;
@@ -26,81 +28,170 @@ const PromptArea = styled.span`
   width: 100%;
 `;
 
-function App() {
-  const [currentSession, setCurrentSession] = useState<RoadTripSession | null>(
-    null
-  );
-  const [prompt, setPrompt] = useState<ParsedPrompt>(
-    parsePrompt(prompts[PromptCategory.DRIVING][0])
-  );
+export const App = () => {
+  const [prompt, setPrompt] = useState<ParsedPrompt>(() => {
+    console.log("in usestate");
+    return parsePrompt(prompts[PromptCategory.DRIVING][0]);
+  });
+
+  const [mask, setMask] = useState<boolean>(true);
+
+  // the index of the current selection in the prompt.selectionIndices array
+  const [currentSelectionIndex, setCurrentSelectionIndex] = useState<
+    number | null
+  >(0);
+
+  const [selectedValues, setSelectionedValues] = useState<
+    Record<number, string>
+  >({});
+
+  console.log("rendering. prompt:", prompt);
 
   const newPromptSelection = (category: PromptCategory) => {
     const categoryPrompts = prompts[category];
+    console.log("newPromptSelection", category);
     const newPrompt = parsePrompt(
       categoryPrompts[Math.floor(Math.random() * categoryPrompts.length)]
     );
+    console.log("setting a new prompt", newPrompt);
     setPrompt(newPrompt);
-    setSelections([]);
-    setWidget(null);
-    setMask(newPrompt.numSelections > 0);
-  };
-
-  const [widget, setWidget] = useState<React.ReactNode | null>(null);
-  const [mask, setMask] = useState<boolean>(true);
-
-  const [selections, setSelections] = useState<string[]>([]);
-
-  const setSelection = (selectedOption: string, idx: number) => {
-    const newSelections = [...selections];
-    newSelections[idx] = selectedOption;
-    setSelections(newSelections);
-  };
-
-  const selectWidget = (promptType: PromptType, idx: number) => {
-    switch (promptType) {
-      case PromptType.DIRECTION_LR:
-        setWidget(
-          <DirectionLR
-            onSelection={(selectedOption: string) =>
-              setSelection(selectedOption, idx)
-            }
-            multi={false}
-          />
-        );
-        break;
-      case PromptType.DIRECTION_CARDINAL:
-        setWidget(
-          <CardinalDirection
-            onSelection={(selectedOption: string) =>
-              setSelection(selectedOption, idx)
-            }
-            multi={false}
-          />
-        );
-        break;
-
-      // case PromptType.DIRECTION_LRF:
-      //   setWidget(
-      //     <DirectionLRF
-      //       onSelection={(selectedOption: string) =>
-      //         setSelection(selectedOption, idx)
-      //       }
-      //     />
-      //   );
-      //   break;
-      default:
-        setWidget(null);
-        break;
+    setSelectionedValues([]);
+    setMask(newPrompt.selectionIndices.length > 0);
+    if (newPrompt.selectionIndices.length > 0) {
+      setCurrentSelectionIndex(0);
+    } else {
+      console.log("no selection indices");
+      setCurrentSelectionIndex(null);
     }
   };
+
+  // set the value selected at a given index
+  const updateSelectedValue = useCallback(
+    (selectedOption: string, idx: number, advance: boolean = true) => {
+      const newSelections = { ...selectedValues, [idx]: selectedOption };
+      setSelectionedValues(newSelections);
+      console.log("setSelection", newSelections, idx);
+
+      // advance the selection index if it is not the last one
+      if (advance) {
+        if (
+          currentSelectionIndex !== null &&
+          currentSelectionIndex < prompt.selectionIndices.length - 1
+        ) {
+          console.log("advancing");
+          setCurrentSelectionIndex(currentSelectionIndex + 1);
+        } else {
+          console.log("resetting");
+          setCurrentSelectionIndex(null);
+        }
+      }
+    },
+    [selectedValues, currentSelectionIndex, prompt]
+  );
+
+  const widget = useMemo(() => {
+    if (currentSelectionIndex === null) {
+      return null;
+    }
+    const partIndex = prompt.selectionIndices[currentSelectionIndex];
+    const part = prompt.parts[partIndex];
+    if (typeof part === "string") {
+      return null;
+    }
+    const selectionType = part.promptType as PromptType;
+
+    switch (selectionType) {
+      case PromptType.DIRECTION_LR:
+        return (
+          <DirectionLR
+            onSelection={(selectedOption: string) =>
+              updateSelectedValue(selectedOption, partIndex)
+            }
+            multi={false}
+          />
+        );
+      case PromptType.DIRECTION_CARDINAL:
+        return (
+          <CardinalDirection
+            onSelection={(selectedOption: string) =>
+              updateSelectedValue(selectedOption, partIndex)
+            }
+            multi={false}
+          />
+        );
+      case PromptType.COLOR:
+        return (
+          <ColorWidget
+            onSelection={(selectedOption: Color) =>
+              updateSelectedValue(selectedOption, partIndex)
+            }
+            multi={false}
+          />
+        );
+      case PromptType.NUMBER:
+        return (
+          <NumberWidget
+            onSelection={(selectedOption: string) =>
+              updateSelectedValue(selectedOption, partIndex)
+            }
+            multi={false}
+            initialValue={
+              selectedValues[partIndex] as
+                | "1"
+                | "2"
+                | "3"
+                | "4"
+                | "5"
+                | "6"
+                | "7"
+                | "8"
+                | "9"
+                | "10"
+                | null
+            }
+            onDrag={(
+              value: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
+            ) => updateSelectedValue(value, partIndex, false)}
+          />
+        );
+      case PromptType.LETTER:
+        return (
+          <LetterWidget
+            onSelection={(selectedOption: string) =>
+              updateSelectedValue(selectedOption, partIndex)
+            }
+            multi={false}
+          />
+        );
+      default:
+        return null;
+    }
+  }, [currentSelectionIndex, prompt, updateSelectedValue, selectedValues]);
+
+  console.log("currentSelectionIndex", currentSelectionIndex);
 
   const components = prompt.parts.map((part, index) => {
     if (typeof part === "object" && "promptType" in part) {
       return (
         <Selection
+          key={index}
           promptType={part.promptType}
-          onClick={(promptType: PromptType) => selectWidget(promptType, index)}
-          value={selections[index]}
+          onClick={() => {
+            // when this selection is clicked, set the current selection index to this index
+            console.log(
+              `click on ${
+                part.promptType
+              } setting current selection index to ${prompt.selectionIndices.indexOf(
+                index
+              )}`
+            );
+            setCurrentSelectionIndex(prompt.selectionIndices.indexOf(index));
+          }}
+          value={selectedValues[index]}
+          current={
+            currentSelectionIndex !== null &&
+            prompt.selectionIndices?.[currentSelectionIndex] === index
+          }
         />
       );
     }
@@ -108,128 +199,8 @@ function App() {
       .split(" ")
       .map((word) => "_".repeat(word.length))
       .join(" ");
-    return <span>{mask ? maskedContent : part}</span>;
+    return <span key={index}>{mask ? maskedContent : part}</span>;
   });
-
-  // const [currentPromptSet, setCurrentPromptSet] = useState<string[]>([]);
-  // const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
-  // const [userSelections, setUserSelections] = useState<UserSelection[]>([]);
-  // const [_, setAllSessions] = useState<RoadTripSession[]>([]);
-
-  // Load sessions from localStorage on mount
-  useEffect(() => {
-    const sessions = getSessions();
-    // setAllSessions(sessions);
-
-    // If no sessions exist, start a new one
-    if (sessions.length === 0) {
-      startNewAdventure();
-    }
-  }, []);
-
-  const startNewAdventure = () => {
-    // Pick a random combination of 1-2 prompts
-    // const randomCombination =
-    //   promptCombinations[Math.floor(Math.random() * promptCombinations.length)];
-
-    const newSession: RoadTripSession = {
-      id: Date.now().toString(),
-      instructions: [],
-      currentStep: 0,
-      isComplete: false,
-      createdAt: new Date(),
-    };
-
-    setCurrentSession(newSession);
-    // setCurrentPromptSet(randomCombination);
-    // setCurrentPromptIndex(0);
-    // setUserSelections([]);
-  };
-
-  const continueAdventure = () => {
-    if (!currentSession) return;
-
-    // Pick a new random combination for the next step
-    // const randomCombination =
-    //   promptCombinations[Math.floor(Math.random() * promptCombinations.length)];
-
-    // setCurrentPromptSet(randomCombination);
-    // setCurrentPromptIndex(0);
-    // setUserSelections([]);
-  };
-
-  // const _handleSelection = (promptId: string, selectedOption: string) => {
-  //   const newSelection: UserSelection = { promptId, selectedOption };
-  //   const updatedSelections = [...userSelections, newSelection];
-  //   setUserSelections(updatedSelections);
-
-  //   // Check if we've completed all prompts in this set
-  //   if (currentPromptIndex < currentPromptSet.length - 1) {
-  //     setCurrentPromptIndex((prev) => prev + 1);
-  //   } else {
-  //     // Generate instruction with current selections
-  //     generateInstruction(updatedSelections);
-  //   }
-  // };
-
-  // const generateInstruction = (selections: UserSelection[]) => {
-  //   // Find instructions that match our current selections
-  //   const availableInstructions = roadTripInstructions.filter((instruction) => {
-  //     return instruction.placeholders.every((placeholder) =>
-  //       selections.some((selection) => selection.promptId === placeholder)
-  //     );
-  //   });
-
-  //   // If no perfect match, use any instruction and fill what we can
-  //   const selectedInstruction =
-  //     availableInstructions.length > 0
-  //       ? availableInstructions[
-  //           Math.floor(Math.random() * availableInstructions.length)
-  //         ]
-  //       : roadTripInstructions[
-  //           Math.floor(Math.random() * roadTripInstructions.length)
-  //         ];
-
-  //   let instructionText = selectedInstruction.template;
-
-  //   // Replace placeholders with user selections
-  //   selectedInstruction.placeholders.forEach((placeholder) => {
-  //     const selection = selections.find((s) => s.promptId === placeholder);
-  //     if (selection) {
-  //       instructionText = instructionText.replace(
-  //         `{${placeholder}}`,
-  //         selection.selectedOption
-  //       );
-  //     }
-  //   });
-
-  //   const generatedInstruction: GeneratedInstruction = {
-  //     instruction: instructionText,
-  //     timestamp: new Date(),
-  //   };
-
-  //   if (currentSession) {
-  //     const updatedSession = {
-  //       ...currentSession,
-  //       instructions: [...currentSession.instructions, generatedInstruction],
-  //       currentStep: currentSession.currentStep + 1,
-  //     };
-  //     setCurrentSession(updatedSession);
-
-  //     // Save to localStorage
-  //     updateSession(currentSession.id, updatedSession);
-  //     setAllSessions(getSessions());
-  //   }
-  // };
-
-  // const _getCurrentPrompt = () => {
-  //   const promptId = currentPromptSet[currentPromptIndex];
-  //   return promptSets[promptId as keyof typeof promptSets];
-  // };
-
-  // const _isPromptSetComplete = () => {
-  //   return currentPromptIndex >= currentPromptSet.length;
-  // };
 
   return (
     <div className="app">
@@ -239,16 +210,6 @@ function App() {
       </header>
 
       <main className="app-main">
-        {/* Current prompt if not complete */}
-        {/* {!isPromptSetComplete() && (
-          <MadLibsPrompt
-            prompt={getCurrentPrompt()}
-            onSelection={handleSelection}
-            step={currentPromptIndex + 1}
-            totalSteps={currentPromptSet.length}
-          />
-        )} */}
-
         <PromptArea>{components}</PromptArea>
         <br />
         {widget}
@@ -256,11 +217,7 @@ function App() {
         <button onClick={() => setMask(false)}>Reveal</button>
 
         <NewPromptSelector onSelection={newPromptSelection} />
-
-        <button onClick={continueAdventure}>Continue Adventure</button>
       </main>
     </div>
   );
-}
-
-export default App;
+};
