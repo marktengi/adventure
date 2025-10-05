@@ -16,11 +16,13 @@ export const prompts: Record<PromptCategory, string[]> = {
     "For the next {{driving_amount}}, go as {direction_cardinal} as possible",
     "Get to the straightest road you can find, take a {direction_lr} turn, and drive for {{driving_amount}}",
     "Drive to a nearby town whose name is at least {number} letters long",
+    "Take the next exit you see, no matter where it leads",
   ],
   [PromptCategory.FOOD]: [
     "Eat at the nearest restaurant with a number in its name",
     "Eat at the restaurant with the longest name you can find",
     "Eat at the closest {{cuisine}} restaurant",
+    "Go to the nearest restaurant where you can eat something new",
   ],
   [PromptCategory.WALKING]: [
     "Walk to the tallest object you can see {direction_cardinal} of you",
@@ -29,8 +31,10 @@ export const prompts: Record<PromptCategory, string[]> = {
     "Go into the most interesting shop you see",
     "Walk to a body of water",
     "Keep walking until you've passed {number} buildings",
+    "Follow a person wearing {color} until they go inside a building",
   ],
   [PromptCategory.LANDMARK]: [
     "Go to a {{landmark}} without taking any {direction_lr} turns",
+    "Find a {{landmark}} with a name containing {letter}",
   ],
 };
