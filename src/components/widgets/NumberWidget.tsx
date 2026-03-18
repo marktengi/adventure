@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 import { WidgetContainer, type WidgetProps } from "./types";
+
+type NumberValue = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10";
 
 const NumberInput = styled.input`
   background-color: white;
@@ -10,9 +12,8 @@ const NumberInput = styled.input`
   width: 100%;
   transition: all 0.2s ease;
 
-  /* Mobile touch optimization */
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  touch-action: none;
 
   &:focus {
     outline: none;
@@ -28,25 +29,48 @@ const NumberInput = styled.input`
     font-size: 1rem;
   }
 `;
+
+const ConfirmButton = styled.button`
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  &:hover {
+    background: #5a6fd6;
+  }
+
+  &:active {
+    background: #4c5ec2;
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    padding: 0.65rem 1.5rem;
+  }
+`;
+
+const ValueLabel = styled.div`
+  font-size: 2rem;
+  font-weight: 700;
+  color: #374151;
+  text-align: center;
+`;
+
 export type NumberWidgetProps = WidgetProps<
   ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 > & {
   multi: false;
-  initialValue:
-    | "1"
-    | "2"
-    | "3"
-    | "4"
-    | "5"
-    | "6"
-    | "7"
-    | "8"
-    | "9"
-    | "10"
-    | null;
-  onDrag: (
-    value: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
-  ) => void;
+  initialValue: NumberValue | null;
+  onDrag: (value: NumberValue) => void;
 };
 
 export const NumberWidget = ({
@@ -54,121 +78,35 @@ export const NumberWidget = ({
   initialValue,
   onDrag,
 }: NumberWidgetProps) => {
-  const handleSelection = (
-    selectedOption: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
-  ) => {
-    onSelection(selectedOption);
-  };
-  const [value, setValue] = useState<
-    "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
-  >(initialValue ?? "1");
+  const [value, setValue] = useState<NumberValue>(initialValue ?? "5");
+  const valueRef = useRef<NumberValue>(initialValue ?? "5");
 
-  const [isDragging, setIsDragging] = useState(false);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value as NumberValue;
+      setValue(newValue);
+      valueRef.current = newValue;
+      onDrag(newValue);
+    },
+    [onDrag]
+  );
 
-  const onChange =
-    (type: "input" | "change") => (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(type);
-      setValue(
-        e.target.value as
-          | "1"
-          | "2"
-          | "3"
-          | "4"
-          | "5"
-          | "6"
-          | "7"
-          | "8"
-          | "9"
-          | "10"
-      );
-      onDrag(
-        e.target.value as
-          | "1"
-          | "2"
-          | "3"
-          | "4"
-          | "5"
-          | "6"
-          | "7"
-          | "8"
-          | "9"
-          | "10"
-      );
-    };
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLInputElement>) => {
-    console.log("touch start");
-    setIsDragging(true);
-    e.stopPropagation();
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLInputElement>) => {
-    console.log("touch move");
-    if (isDragging) {
-      console.log("touch move, dragging");
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent<HTMLInputElement>) => {
-    console.log("touch end");
-    if (isDragging) {
-      console.log("touch end, dragging");
-      setIsDragging(false);
-      e.preventDefault();
-      e.stopPropagation();
-      handleSelection(value);
-    }
-  };
-
-  const handleMouseDown = (e: React.MouseEvent<HTMLInputElement>) => {
-    console.log("mouse down");
-    setIsDragging(true);
-    e.stopPropagation();
-  };
-
-  const handleMouseUp = (e: React.MouseEvent<HTMLInputElement>) => {
-    console.log("mouse up");
-    if (isDragging) {
-      console.log("mouse up, dragging");
-      setIsDragging(false);
-      e.preventDefault();
-      e.stopPropagation();
-      handleSelection(value);
-    }
-  };
-
-  const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    console.log("click");
-    // Prevent click if we were dragging
-    if (isDragging) {
-      console.log("click, dragging");
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
+  const handleConfirm = useCallback(() => {
+    onSelection(valueRef.current);
+  }, [onSelection]);
 
   return (
     <WidgetContainer>
+      <ValueLabel>{value}</ValueLabel>
       <NumberInput
         type="range"
         min="1"
         max="10"
         value={value}
-        onInput={onChange("input")}
-        onChange={onChange("change")}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onClick={handleClick}
-        style={{
-          touchAction: "none", // Prevent default touch behaviors
-          userSelect: "none", // Prevent text selection during drag
-        }}
+        onChange={handleChange}
+        style={{ userSelect: "none" }}
       />
+      <ConfirmButton onClick={handleConfirm}>Confirm</ConfirmButton>
     </WidgetContainer>
   );
 };
